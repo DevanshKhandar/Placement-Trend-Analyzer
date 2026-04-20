@@ -1,0 +1,172 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.container { padding: 20px 0; }
+.phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; cursor: pointer; user-select: none; }
+.phase-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 500; flex-shrink: 0; }
+.phase-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+.phase-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.phase-card { border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 12px; overflow: hidden; }
+.phase-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; }
+.phase-body.open { max-height: 1000px; padding: 0 16px 16px; }
+.step { display: flex; gap: 10px; margin-top: 12px; align-items: flex-start; }
+.step-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+.step-content { flex: 1; }
+.step-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.step-desc { font-size: 13px; color: var(--color-text-secondary); margin-top: 3px; line-height: 1.5; }
+.code-pill { display: inline-block; background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); border-radius: 4px; padding: 1px 6px; font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); margin: 2px 2px 0 0; }
+.chevron { margin-left: auto; font-size: 12px; color: var(--color-text-tertiary); transition: transform 0.25s; }
+.chevron.open { transform: rotate(180deg); }
+.tip-box { background: var(--color-background-secondary); border-left: 3px solid; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 8px 12px; margin-top: 12px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.progress-bar { display: flex; gap: 4px; margin-bottom: 20px; }
+.pb-seg { flex: 1; height: 4px; border-radius: 2px; }
+</style>
+
+<div class="container">
+  <div style="margin-bottom:16px;">
+    <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Placement Trend Analyzer — Project Roadmap</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);">6 phases · Click any phase to expand details</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="pb-seg" style="background:#534AB7;"></div>
+    <div class="pb-seg" style="background:#0F6E56;"></div>
+    <div class="pb-seg" style="background:#993C1D;"></div>
+    <div class="pb-seg" style="background:#185FA5;"></div>
+    <div class="pb-seg" style="background:#854F0B;"></div>
+    <div class="pb-seg" style="background:#A32D2D;"></div>
+  </div>
+
+  <div id="phases"></div>
+</div>
+
+<script>
+const phases = [
+  {
+    num: 1, color: "#EEEDFE", numBg: "#534AB7", numText: "#fff",
+    title: "Setup & Dataset Collection",
+    subtitle: "Get your tools ready and find the right data",
+    steps: [
+      { title: "Install required software", desc: "Install Python (from python.org), then install Anaconda (from anaconda.com). Anaconda gives you Jupyter Notebook — the environment where you'll write all your code.", dot: "#534AB7" },
+      { title: "Install Python libraries", desc: "Open your terminal/command prompt and run:", dot: "#534AB7", code: ["pip install pandas numpy matplotlib seaborn scikit-learn plotly"] },
+      { title: "Go to Kaggle and search for dataset", desc: "Visit kaggle.com → Create a free account → Search for 'campus placement dataset' or 'college placement data'. The most popular one is 'Campus Recruitment' by Ben Roshan.", dot: "#534AB7" },
+      { title: "Download and extract the dataset", desc: "Download the .csv file. Place it in a folder called 'placement_project' on your Desktop. This folder will be your working directory.", dot: "#534AB7" }
+    ],
+    tip: { color: "#534AB7", text: "Recommended dataset: 'Campus Recruitment Dataset' on Kaggle — it has salary, branch, gender, scores, and placement status columns." }
+  },
+  {
+    num: 2, color: "#E1F5EE", numBg: "#0F6E56", numText: "#fff",
+    title: "Data Exploration (EDA)",
+    subtitle: "Understand your data before doing anything with it",
+    steps: [
+      { title: "Open Jupyter Notebook", desc: "Open Anaconda Navigator → Launch Jupyter Notebook → Navigate to your 'placement_project' folder → Create a new Python 3 notebook.", dot: "#0F6E56" },
+      { title: "Load and preview your data", desc: "Write and run this code to see your data:", dot: "#0F6E56", code: ["import pandas as pd", "df = pd.read_csv('Placement_Data.csv')", "df.head()  # shows first 5 rows"] },
+      { title: "Check data shape and info", desc: "Run df.shape to see rows/columns count. Run df.info() to see column types. Run df.describe() to see statistics like min, max, average.", dot: "#0F6E56" },
+      { title: "Identify missing values and data types", desc: "Run df.isnull().sum() to see which columns have missing values. Note down what each column means (e.g. 'salary' may be empty for unplaced students).", dot: "#0F6E56" }
+    ],
+    tip: { color: "#0F6E56", text: "Don't skip EDA! This step helps you understand what charts are even possible and what problems need fixing before visualization." }
+  },
+  {
+    num: 3, color: "#FAECE7", numBg: "#993C1D", numText: "#fff",
+    title: "Data Cleaning",
+    subtitle: "Fix problems so your charts are accurate",
+    steps: [
+      { title: "Handle missing values", desc: "For salary column: missing = student not placed (that's okay). Fill missing salary with 0 or drop those rows depending on your analysis. Use: df['salary'].fillna(0, inplace=True)", dot: "#993C1D", code: ["df['salary'].fillna(0, inplace=True)"] },
+      { title: "Remove duplicates", desc: "Run df.drop_duplicates(inplace=True) to remove any repeated rows in the dataset.", dot: "#993C1D", code: ["df.drop_duplicates(inplace=True)"] },
+      { title: "Fix data types", desc: "Make sure salary is a number (float), status is text, etc. Use df.dtypes to check. Convert if needed using df['salary'] = df['salary'].astype(float).", dot: "#993C1D" },
+      { title: "Rename columns (optional)", desc: "Rename confusing column names to readable ones like df.rename(columns={'sl_no':'serial_no', 'ssc_p':'10th_percentage'}, inplace=True)", dot: "#993C1D" }
+    ],
+    tip: { color: "#993C1D", text: "Always keep a backup of your original CSV before cleaning. Work on a copy: df_clean = df.copy()" }
+  },
+  {
+    num: 4, color: "#E6F1FB", numBg: "#185FA5", numText: "#fff",
+    title: "Analysis & Visualization",
+    subtitle: "Build all the charts and insights",
+    steps: [
+      { title: "Placement rate chart", desc: "Count placed vs not placed students and make a pie chart using matplotlib. df['status'].value_counts().plot(kind='pie', autopct='%1.1f%%')", dot: "#185FA5" },
+      { title: "Salary distribution chart", desc: "Plot a histogram showing how salaries are spread. Use seaborn: sns.histplot(df[df['salary']>0]['salary'], bins=20, kde=True)", dot: "#185FA5" },
+      { title: "Branch-wise placement comparison", desc: "Group data by branch and plot a bar chart showing placement rate per branch. df.groupby('degree_t')['status'].value_counts().unstack().plot(kind='bar')", dot: "#185FA5" },
+      { title: "Skills/scores vs salary scatter plot", desc: "Show how academic performance relates to salary. sns.scatterplot(x='cgpa', y='salary', hue='status', data=df)", dot: "#185FA5" },
+      { title: "Company/specialization hiring trends", desc: "Bar chart of which MBA specializations got more placements. df['specialisation'].value_counts().plot(kind='bar')", dot: "#185FA5" }
+    ],
+    tip: { color: "#185FA5", text: "Aim for at least 5–6 different chart types: pie, bar, histogram, scatter, heatmap, and boxplot. This shows you understand different visual tools." }
+  },
+  {
+    num: 5, color: "#FAEEDA", numBg: "#854F0B", numText: "#fff",
+    title: "Build the Dashboard",
+    subtitle: "Combine everything into one interactive interface",
+    steps: [
+      { title: "Install Streamlit", desc: "Streamlit turns your Python code into a real web dashboard. Run in terminal:", dot: "#854F0B", code: ["pip install streamlit"] },
+      { title: "Create app.py file", desc: "Create a new file called app.py in your project folder (not in Jupyter — use Notepad, VS Code, or any text editor). This file will be your dashboard.", dot: "#854F0B" },
+      { title: "Add summary statistics at the top", desc: "Use st.metric() to show Total Students, Placement Rate %, Average Salary, and Highest Salary as big number cards at the top of your dashboard.", dot: "#854F0B", code: ["st.metric('Placement Rate', '68%')", "st.metric('Avg Salary', '₹3.5L')"] },
+      { title: "Add all your charts to the dashboard", desc: "Use st.plotly_chart() or st.pyplot() to embed each chart into the dashboard. Use st.columns(2) to place two charts side by side.", dot: "#854F0B" },
+      { title: "Add filters (optional but impressive)", desc: "Use st.selectbox() or st.slider() to let users filter by branch, gender, or year. This makes your dashboard interactive.", dot: "#854F0B" },
+      { title: "Run your dashboard", desc: "Open terminal, navigate to your folder, and run:", dot: "#854F0B", code: ["streamlit run app.py"] }
+    ],
+    tip: { color: "#854F0B", text: "Streamlit is the easiest way to build a dashboard in Python. No web development knowledge needed — just Python!" }
+  },
+  {
+    num: 6, color: "#FCEBEB", numBg: "#A32D2D", numText: "#fff",
+    title: "ML Prediction (Bonus) + Final Submission",
+    subtitle: "Add salary/placement prediction and wrap up",
+    steps: [
+      { title: "Add placement probability prediction", desc: "Use Logistic Regression from sklearn. Train it on your cleaned data (features = scores/gender/branch, target = placed/not placed). Display the result in your dashboard.", dot: "#A32D2D", code: ["from sklearn.linear_model import LogisticRegression"] },
+      { title: "Add expected salary prediction", desc: "Use Linear Regression on placed students only (features = scores, target = salary). Let users input their profile and see predicted salary.", dot: "#A32D2D" },
+      { title: "Write your project report", desc: "Create a Word/PDF document covering: Problem statement, Dataset description, Data cleaning steps, Charts with observations, Conclusion. This is submitted along with the code.", dot: "#A32D2D" },
+      { title: "Prepare your files for submission", desc: "Submit: your .ipynb Jupyter notebook, app.py dashboard file, the CSV dataset, and your project report PDF.", dot: "#A32D2D" },
+      { title: "Optional: Deploy online", desc: "You can host your Streamlit dashboard free at streamlit.io/cloud — just link your GitHub repo. Very impressive for demos!", dot: "#A32D2D" }
+    ],
+    tip: { color: "#A32D2D", text: "Even a basic ML model adds a lot of marks. Keep it simple — Logistic Regression for placement prediction is perfect for a mini project." }
+  }
+];
+
+const container = document.getElementById('phases');
+let openIndex = 0;
+
+phases.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  card.style.borderColor = p.numBg + '44';
+
+  const stepsHtml = p.steps.map((s, si) => `
+    <div class="step">
+      <div class="step-dot" style="background:${s.dot}22;color:${s.dot};">${si+1}</div>
+      <div class="step-content">
+        <div class="step-title">${s.title}</div>
+        <div class="step-desc">${s.desc}</div>
+        ${s.code ? s.code.map(c => `<span class="code-pill">${c}</span>`).join('') : ''}
+      </div>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="phase-header" style="padding:14px 16px;background:${p.color}22;" onclick="toggle(${i})">
+      <div class="phase-num" style="background:${p.numBg};color:${p.numText};">${p.num}</div>
+      <div style="flex:1">
+        <div class="phase-title">${p.title}</div>
+        <div class="phase-subtitle">${p.subtitle}</div>
+      </div>
+      <div class="chevron" id="chev-${i}">▼</div>
+    </div>
+    <div class="phase-body" id="body-${i}">
+      ${stepsHtml}
+      <div class="tip-box" style="border-color:${p.tip.color};">
+        <strong style="color:${p.tip.color};">Tip:</strong> ${p.tip.text}
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+
+function toggle(i) {
+  const body = document.getElementById('body-' + i);
+  const chev = document.getElementById('chev-' + i);
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.phase-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); chev.classList.add('open'); }
+}
+
+toggle(0);
+</script>

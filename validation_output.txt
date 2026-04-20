@@ -1,0 +1,148 @@
+﻿python : C:\Users\Devansh\anaconda5\Lib\site-packages\pandas\core\computation\expressions.py:22: UserWarning: Pandas 
+requires version '2.10.2' or newer of 'numexpr' (version '2.8.4' currently installed).
+At line:1 char:1
++ python -u -c "import sys; sys.stdout.reconfigure(encoding='utf-8'); e ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\Devans...tly installed).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+C:\Users\Devansh\anaconda5\Lib\site-packages\pandas\core\arrays\masked.py:56: UserWarning: Pandas requires version 
+'1.4.2' or newer of 'bottleneck' (version '1.3.5' currently installed).
+  from pandas.core import (
+======================================================================
+   INDEPENDENT VALIDATION OF ALL CALCULATIONS
+======================================================================
+
+Dataset: 215 records, 5 branches, 12 skills
+Placed: 148, Not Placed: 67
+
+======================================================================
+  1. ANOVA TEST: CGPA across Engineering Branches
+======================================================================
+  Grand Mean (CGPA):     7.9823
+  SSB (Between Groups):  1.0755
+  SSW (Within Groups):   40.6649
+  df(Between): 4,  df(Within): 210
+  MSB: 0.2689,  MSW: 0.1936
+  F-statistic (scipy):   1.3885
+  F-statistic (manual):  1.3885
+  Match: Γ£à YES
+  P-value:               0.2391
+  Significant (╬▒=0.05):  No - Fail to Reject HΓéÇ
+
+  Group Statistics:
+                           mean     std  count
+engineering_branch                            
+Civil Engineering        7.9268  0.4876     19
+Computer Engineering     7.9987  0.4361     89
+Electronics & Telecomm.  7.9376  0.4707     42
+Information Technology   7.9161  0.4109     41
+Mechanical Engineering   8.1567  0.4072     24
+
+======================================================================
+  2. CHI-SQUARE TEST: Branch vs Placement Status
+======================================================================
+  Chi┬▓ statistic:  6.5414
+  P-value:         0.1622
+  Degrees of Freedom: 4
+  Significant (╬▒=0.05): No - Fail to Reject HΓéÇ
+  Chi┬▓ (manual):   6.5414
+  Match: Γ£à YES
+
+  Observed Frequencies:
+status                   Not Placed  Placed
+engineering_branch                         
+Civil Engineering                 3      16
+Computer Engineering             35      54
+Electronics & Telecomm.          11      31
+Information Technology           13      28
+Mechanical Engineering            5      19
+
+  Expected Frequencies:
+status                   Not Placed  Placed
+engineering_branch                         
+Civil Engineering              5.92   13.08
+Computer Engineering          27.73   61.27
+Electronics & Telecomm.       13.09   28.91
+Information Technology        12.78   28.22
+Mechanical Engineering         7.48   16.52
+
+======================================================================
+  3. CHI-SQUARE TEST: Internships vs Placement Status
+======================================================================
+  Chi┬▓ statistic:  26.7353
+  Chi┬▓ (manual):   26.7353
+  Match: Γ£à YES
+  P-value:         0.000007
+  Degrees of Freedom: 3
+  Significant (╬▒=0.05): Yes - Reject HΓéÇ
+
+  Observed Frequencies:
+status       Not Placed  Placed
+internships                    
+0                    27      19
+1                    15      26
+2                    21      70
+3                     4      33
+
+======================================================================
+  4. ML MODELS VALIDATION
+======================================================================
+
+  ΓöÇΓöÇ 4a. Logistic Regression (Placement Classification) ΓöÇΓöÇ
+  Train size: 172, Test size: 43
+  Accuracy:   0.8140 (81.4%)
+
+  Confusion Matrix:
+    [[ 7  5]
+ [ 3 28]]
+
+  Classification Report:
+              precision    recall  f1-score   support
+
+  Not Placed       0.70      0.58      0.64        12
+      Placed       0.85      0.90      0.88        31
+
+    accuracy                           0.81        43
+   macro avg       0.77      0.74      0.76        43
+weighted avg       0.81      0.81      0.81        43
+
+  Coefficients (top 5 by magnitude):
+    gender_enc                          ΓåÆ +1.0355
+    hsc_stream_enc                      ΓåÆ -0.3546
+    placement_readiness                 ΓåÆ +0.2812
+    core_skill_enc                      ΓåÆ +0.2667
+    technical_interview_score           ΓåÆ -0.2294
+
+  ΓöÇΓöÇ 4b. Linear Regression (Salary Prediction) ΓöÇΓöÇ
+  Train size: 118, Test size: 30
+  R┬▓ Score:   -0.3974
+  MAE:        Γé╣70,113
+  Intercept:  -38241458.41
+  Top 5 Coefficients:
+    cgpa                                ΓåÆ +9723125.73
+    overall_academic_score              ΓåÆ +6051139.43
+    ug_percentage                       ΓåÆ -3485071.00
+    hsc_percentage                      ΓåÆ -1735743.13
+    activity_score                      ΓåÆ +1512581.79
+
+  ΓöÇΓöÇ 4c. Polynomial Regression (degree=2, Salary) ΓöÇΓöÇ
+  Input features: ['cgpa', 'internships', 'employability_test_percentage', 'technical_interview_score']
+  Polynomial features generated: 14
+  Feature names: ['cgpa', 'internships', 'employability_test_percentage', 'technical_interview_score', 'cgpa^2', 'cgpa internships', 'cgpa employability_test_percentage', 'cgpa technical_interview_score', 'internships^2', 'internships employability_test_percentage', 'internships technical_interview_score', 'employability_test_percentage^2', 'employability_test_percentage technical_interview_score', 'technical_interview_score^2']
+  R┬▓ Score:   -0.5770
+  MAE:        Γé╣77,531
+
+======================================================================
+  5. FEATURE ENGINEERING VALIDATION
+======================================================================
+  Sample UG%: 58.0, CGPA: 7.48, Recalc: 7.48 ΓåÆ Γ£à
+  OAS: 69.7, Recalc: 69.7 ΓåÆ Γ£à
+  Consistency: 17.06, Recalc: 17.06 ΓåÆ Γ£à
+  Activity Score: 3, Recalc: 3 ΓåÆ Γ£à
+  CGPA├ùIntern: 7.48, Recalc: 7.48 ΓåÆ Γ£à
+
+======================================================================
+  Γ£à VALIDATION COMPLETE
+======================================================================
